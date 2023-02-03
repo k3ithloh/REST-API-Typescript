@@ -1,19 +1,23 @@
-import { Request, Response, NextFunction } from "express";
-import { AnyZodObject } from "zod";
+// when a request comes in we are going to provide a schema in the middleware and it is going to validate the request against the schema
 
-const validate =
-  (schema: AnyZodObject) =>
-  (req: Request, res: Response, next: NextFunction) => {
-    try {
-      schema.parse({
-        body: req.body,
-        query: req.query,
-        params: req.params,
-      });
-      next();
-    } catch (e: any) {
-      return res.status(400).send(e.errors);
+import {Request, Response, NextFunction} from 'express';
+import {AnyZodObject} from 'zod';
+
+const validate = 
+    (schema: AnyZodObject) =>
+    (req: Request, res: Response, next: NextFunction) => {
+  
+
+    try{
+        schema.parse({
+            body: req.body,
+            query: req.query,
+            params: req.params
+        });
+        next();
+    }catch(e: any){
+        return res.status(400).send(e.errors);
     }
-  };
+};
 
 export default validate;
