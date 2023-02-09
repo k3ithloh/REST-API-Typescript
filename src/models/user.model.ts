@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import config from 'config';
+import logger from '../utils/logger';
 
 // Create typescript definition for userSchema
 // there is a few ways of integrating typescript with mongoose 
@@ -41,12 +42,13 @@ password: {type: String, required: true},
 userSchema.pre("save", async function(next){
     let user = this as UserDocument;
 
-    if(user.isModified('password')){
+    if(!user.isModified('password')){
         return next();
     }
     const salt = await bcrypt.genSalt(config.get<number>('saltWorkFactor'));
     const hash = await bcrypt.hashSync(user.password, salt);
     user.password = hash;
+    logger.info(`Hashed password for user ${user.password}`)
     return next();
 });
 
@@ -54,10 +56,10 @@ userSchema.methods.comparePassword = async function(
     candidatePassword: string
     ): Promise<boolean> {
     const user = this as UserDocument;
-
+        logger.info(`Comparing password for user ${user.password}`)
     return bcrypt.compare(candidatePassword, user.password).catch((e) => false);
 }
 
 const UserModel = mongoose.model('User', userSchema);
 
-export default UserModel
+export default UserModel;

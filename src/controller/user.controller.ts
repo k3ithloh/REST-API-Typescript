@@ -10,6 +10,8 @@ try{
     const user = await createUser(req.body); //call create user service
     // return user;
     // The line above is wrong you cannot just return user you have to call the response object
+
+    // The omit is so that you omit the password from the JSON response to the front end so that the password is not sent back to the front end
     return res.send(omit(user.toJSON(),"password"));
 }
 catch(e: any){
