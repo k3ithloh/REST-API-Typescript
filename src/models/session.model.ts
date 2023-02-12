@@ -7,8 +7,8 @@ import {UserDocument} from './user.model'
 // Create typescript definition for userSchema
 // there is a few ways of integrating typescript with mongoose 
 // ! Another way is to use typegoose
-export interface SchemaDocument extends mongoose.Document {
-    user: UserDocument['_id']; 
+export interface SessionDocument extends mongoose.Document {
+    user: UserDocument["_id"]; 
     valid: boolean;
     userAgent: string;
     createdAt: Date;
@@ -17,13 +17,13 @@ export interface SchemaDocument extends mongoose.Document {
 
 const sessionSchema = new mongoose.Schema({
 email: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true},
-valid: {type: Boolean, required: true},
+valid: {type: Boolean, default: true},
 userAgent: {type: String}
 },{
     timestamps: true,
 });
 
 
-const SessionModel = mongoose.model('Session', sessionSchema);
+const SessionModel = mongoose.model<SessionDocument>('Session', sessionSchema);
 
 export default SessionModel;
